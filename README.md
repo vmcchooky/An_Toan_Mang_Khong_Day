@@ -1,10 +1,15 @@
 ### Giới thiệu
 **Tác giả:** Võ Mạnh Cường – MSSV: 52200319  
+
 **Biệt danh:** Chooky  
 **Lớp:** 22050401 – Khoa Công nghệ Thông tin  
+
 **Trường Đại học Tôn Đức Thắng**  
+
 **Môn học:** An Toàn Mạng Không Dây và Di Động
+
 **Giảng viên hướng dẫn:** TS. Bùi Quy Anh
+
 **Ngày hoàn thành:** 21/05/2025  
 
 
