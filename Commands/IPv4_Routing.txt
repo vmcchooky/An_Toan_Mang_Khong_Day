@@ -1,0 +1,173 @@
+Router R1 (Branch - OSPF)
+enable
+configure terminal
+router ospf 1
+network 128.1.8.0 0.0.0.255 area 0
+network 128.1.0.0 0.0.1.255 area 0
+network 128.1.2.0 0.0.1.255 area 0
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+
+Router R2 (Branch - OSPF)
+enable
+configure terminal
+router ospf 1
+network 128.1.8.0 0.0.0.255 area 0
+network 128.1.4.0 0.0.0.127 area 0
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+
+Router R3 (Branch - OSPF)
+enable
+configure terminal
+router ospf 1
+network 128.1.8.0 0.0.0.255 area 0
+network 128.1.5.0 0.0.0.255 area 0
+network 128.1.6.0 0.0.0.127 area 0
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+
+Router R4 (HQ - EIGRP + Static Routes)
+Thêm tuyến tĩnh đến R5 và R7 qua VLAN 60.
+enable
+configure terminal
+router eigrp 100
+network 12.0.1.0 0.0.0.255
+network 12.0.2.0 0.0.1.255
+network 12.0.4.0 0.0.0.127
+network 12.0.4.128 0.0.0.63
+network 12.0.4.192 0.0.0.15
+network 12.0.4.224 0.0.0.31
+no auto-summary
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+no passive-interface GigabitEthernet0/0/1
+ip route 12.0.4.230 255.255.255.255 12.0.4.230
+ip route 12.0.4.231 255.255.255.255 12.0.4.231
+ip route 200.0.100.8 255.255.255.252 12.0.4.230
+ip route 200.0.100.0 255.255.255.252 12.0.4.231
+ip route 200.0.100.4 255.255.255.252 12.0.4.231
+ip route 200.0.100.24 255.255.255.252 12.0.4.231
+ip route 128.1.7.0 255.255.255.0 12.0.4.231
+ip route 12.0.6.0 255.255.255.0 12.0.4.231
+ip route 128.1.8.0 255.255.255.0 12.0.4.230
+ip route 128.1.0.0 255.255.254.0 12.0.4.230
+ip route 128.1.2.0 255.255.254.0 12.0.4.230
+ip route 128.1.4.0 255.255.255.128 12.0.4.230
+ip route 128.1.5.0 255.255.255.0 12.0.4.230
+ip route 128.1.6.0 255.255.255.128 12.0.4.230
+ip route 203.0.113.0 255.255.255.0 12.0.4.230
+
+
+Router R5 (HQ/Branch - EIGRP + OSPF + Static Routes)
+Thêm tuyến tĩnh đến R4 và R7 qua VLAN 60.
+Điều chỉnh redistribute để truyền bá đầy đủ tuyến.
+enable
+configure terminal
+ip route 0.0.0.0 0.0.0.0 Serial0/1/0
+ip route 12.0.1.0 255.255.255.0 12.0.4.225
+ip route 12.0.2.0 255.255.254.0 12.0.4.225
+ip route 12.0.4.0 255.255.255.128 12.0.4.225
+ip route 12.0.4.128 255.255.255.192 12.0.4.225
+ip route 12.0.4.192 255.255.255.240 12.0.4.225
+ip route 12.0.4.225 255.255.255.255 12.0.4.225
+ip route 12.0.4.231 255.255.255.255 12.0.4.231
+router eigrp 100
+network 128.1.8.0 0.0.0.255
+network 12.0.4.224 0.0.0.31
+network 200.0.100.8 0.0.0.3
+redistribute ospf 1 metric 100000 100 255 1 1500
+redistribute static metric 100000 100 255 1 1500
+default-information originate
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+no passive-interface GigabitEthernet0/0/1
+no passive-interface Serial0/1/0
+no auto-summary
+router ospf 1
+network 128.1.8.0 0.0.0.255 area 0
+network 12.0.4.224 0.0.0.31 area 0
+redistribute eigrp 100 metric 100 subnets
+default-information originate
+passive-interface default
+no passive-interface GigabitEthernet0/0/0
+no passive-interface GigabitEthernet0/0/1
+
+
+Router R6 (HQ - EIGRP)
+enable
+configure terminal
+router eigrp 100
+network 128.1.7.0 0.0.0.255
+network 200.0.100.0 0.0.0.3
+network 200.0.100.24 0.0.0.3
+passive-interface default
+no passive-interface Serial0/1/0
+no auto-summary
+
+Router R7 (HQ - EIGRP + Static Routes)
+Thêm tuyến tĩnh đến R4 và R5 qua VLAN 60.
+enable
+configure terminal
+ip route 12.0.1.0 255.255.255.0 12.0.4.225
+ip route 12.0.2.0 255.255.254.0 12.0.4.225
+ip route 12.0.4.0 255.255.255.128 12.0.4.225
+ip route 12.0.4.128 255.255.255.192 12.0.4.225
+ip route 12.0.4.192 255.255.255.240 12.0.4.225
+ip route 12.0.4.225 255.255.255.255 12.0.4.225
+ip route 12.0.4.230 255.255.255.255 12.0.4.230
+ip route 128.1.8.0 255.255.255.0 12.0.4.230
+ip route 128.1.0.0 255.255.254.0 12.0.4.230
+ip route 128.1.2.0 255.255.254.0 12.0.4.230
+ip route 128.1.4.0 255.255.255.128 12.0.4.230
+ip route 128.1.5.0 255.255.255.0 12.0.4.230
+ip route 128.1.6.0 255.255.255.128 12.0.4.230
+ip route 203.0.113.0 255.255.255.0 12.0.4.230
+router eigrp 100
+network 12.0.4.224 0.0.0.31
+network 200.0.100.0 0.0.0.3
+network 200.0.100.4 0.0.0.3
+network 200.0.100.24 0.0.0.3
+passive-interface default
+no passive-interface Serial0/1/0
+no passive-interface Serial0/1/1
+no passive-interface GigabitEthernet0/0/0
+no auto-summary
+
+Router R8 (HQ - EIGRP)
+enable
+configure terminal
+router eigrp 100
+network 12.0.6.0 0.0.0.255
+network 200.0.100.4 0.0.0.3
+network 200.0.100.24 0.0.0.3
+passive-interface default
+no passive-interface Serial0/1/0
+no auto-summary
+
+Router ACCESS (Internet)
+Thêm tuyến tĩnh đến tất cả các mạng, bao gồm mạng tunnel.
+enable
+configure terminal
+ip route 12.0.1.0 255.255.255.0 Serial0/1/0
+ip route 12.0.2.0 255.255.254.0 Serial0/1/0
+ip route 12.0.4.0 255.255.255.128 Serial0/1/0
+ip route 12.0.4.128 255.255.255.192 Serial0/1/0
+ip route 12.0.4.192 255.255.255.240 Serial0/1/0
+ip route 12.0.4.224 255.255.255.224 Serial0/1/0
+ip route 12.0.6.0 255.255.255.0 Serial0/1/0
+ip route 128.1.7.0 255.255.255.0 Serial0/1/0
+ip route 128.1.8.0 255.255.255.0 Serial0/1/0
+ip route 128.1.0.0 255.255.254.0 Serial0/1/0
+ip route 128.1.2.0 255.255.254.0 Serial0/1/0
+ip route 128.1.4.0 255.255.255.128 Serial0/1/0
+ip route 128.1.5.0 255.255.255.0 Serial0/1/0
+ip route 128.1.6.0 255.255.255.128 Serial0/1/0
+ip route 200.0.100.0 255.255.255.252 Serial0/1/0
+ip route 200.0.100.4 255.255.255.252 Serial0/1/0
+ip route 200.0.100.8 255.255.255.252 Serial0/1/0
+ip route 200.0.100.24 255.255.255.252 Serial0/1/0
+
+
+
+

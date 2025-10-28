@@ -1,0 +1,438 @@
+R1
+enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 128.1.8.2 255.255.255.0
+no shutdown
+interface Loopback0
+ip address 128.1.0.1 255.255.254.0
+no shutdown
+interface Loopback1
+ip address 128.1.2.1 255.255.254.0
+no shutdown
+
+
+Router R2 (Branch)
+enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 128.1.8.3 255.255.255.0
+no shutdown
+interface Loopback0
+ip address 128.1.4.1 255.255.255.128
+no shutdown
+
+Router R3 (Branch)
+enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 128.1.8.4 255.255.255.0
+no shutdown
+interface Loopback0
+ip address 128.1.5.1 255.255.255.0
+no shutdown
+interface Loopback1
+ip address 128.1.6.1 255.255.255.128
+no shutdown
+
+Switch S0 (Branch)
+enable
+configure terminal
+interface vlan 1
+ip address 128.1.8.1 255.255.255.0
+no shutdown
+interface FastEthernet0/1
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface FastEthernet0/2
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface GigabitEthernet0/1
+switchport mode trunk
+no shutdown
+interface range FastEthernet0/4 - 24
+switchport mode access
+switchport access vlan 1
+no shutdown
+ip default-gateway 128.1.8.5
+
+
+Router R5 (HQ)
+enable
+configure terminal
+interface Serial0/1/0
+ip address 200.0.100.9 255.255.255.252
+no shutdown
+interface GigabitEthernet0/0/0
+ip address 128.1.8.5 255.255.255.0
+no shutdown
+interface GigabitEthernet0/0/1
+ip address 12.0.4.230 255.255.255.224
+no shutdown
+
+Router R6 (HQ - LAN 6)
+enable
+configure terminal
+interface Serial0/1/0
+ip address 200.0.100.2 255.255.255.252
+no shutdown
+interface GigabitEthernet0/0/0
+ip address 128.1.7.1 255.255.255.0
+no shutdown
+
+Router R7 (HQ)
+enable
+configure terminal
+interface GigabitEthernet0/0/0
+ip address 12.0.4.231 255.255.255.224
+no shutdown
+interface Serial0/1/1
+ip address 200.0.100.1 255.255.255.252
+no shutdown
+interface Serial0/1/0
+ip address 200.0.100.5 255.255.255.252
+no shutdown
+
+Router R8 (HQ - LAN 8)
+enable
+configure terminal
+interface Serial0/1/0
+ip address 200.0.100.6 255.255.255.252
+no shutdown
+interface GigabitEthernet0/0/0
+ip address 12.0.6.1 255.255.255.0
+no shutdown
+
+Router ACCESS (Internet)
+enable
+configure terminal
+interface Serial0/1/0
+ip address 200.0.100.10 255.255.255.252
+no shutdown
+interface GigabitEthernet0/0/0
+ip address 203.0.113.1 255.255.255.0
+no shutdown
+
+
+Switch S0 (Branch)
+enable
+configure terminal
+interface vlan 1
+ip address 128.1.8.1 255.255.255.0
+no shutdown
+interface FastEthernet0/1
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface FastEthernet0/2
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 1
+no shutdown
+interface GigabitEthernet0/1
+switchport mode trunk
+no shutdown
+interface range FastEthernet0/4 - 24
+switchport mode access
+switchport access vlan 1
+no shutdown
+ip default-gateway 128.1.8.5
+
+Switch S1 (HQ - VTP Server)
+enable
+configure terminal
+vtp mode server
+vtp domain HQ
+vlan 10
+name UNIT1
+vlan 20
+name UNIT2
+vlan 30
+name UNIT3
+vlan 40
+name GUEST
+vlan 50
+name SERVERS
+vlan 60
+name Management
+interface vlan 60
+ip address 12.0.4.226 255.255.255.224
+interface FastEthernet0/24
+switchport mode access
+switchport access vlan 50
+no shutdown
+interface GigabitEthernet0/1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface GigabitEthernet0/2
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/1 - 2
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 1 mode active
+no shutdown
+interface Port-channel1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/3 - 4
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 2 mode active
+no shutdown
+interface Port-channel2
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/5 - 12
+switchport mode access
+switchport access vlan 10
+no shutdown
+interface range FastEthernet0/13 - 20
+switchport mode access
+switchport access vlan 20
+no shutdown
+interface range FastEthernet0/21 - 22
+switchport mode access
+switchport access vlan 30
+no shutdown
+interface range FastEthernet0/23
+switchport mode access
+switchport access vlan 40
+no shutdown
+ip default-gateway 12.0.4.225
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 root primary
+spanning-tree vlan 20 root primary
+spanning-tree vlan 30 root primary
+username admin privilege 15 password chooky
+enable password vmc
+line vty 0 15
+login local
+transport input ssh
+exit
+ip domain-name hq.local
+crypto key generate rsa
+
+Switch S2 (HQ - VTP Client)
+enable
+configure terminal
+vtp mode client
+vtp domain HQ
+interface vlan 60
+ip address 12.0.4.227 255.255.255.224
+no shutdown
+interface GigabitEthernet0/1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/1 - 2
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 1 mode active
+no shutdown
+interface Port-channel1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/3 - 4
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 2 mode active
+no shutdown
+interface Port-channel2
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/5 - 12
+switchport mode access
+switchport access vlan 10
+no shutdown
+interface range FastEthernet0/13 - 20
+switchport mode access
+switchport access vlan 20
+no shutdown
+interface range FastEthernet0/21 - 22
+switchport mode access
+switchport access vlan 30
+no shutdown
+interface range FastEthernet0/23
+switchport mode access
+switchport access vlan 40
+no shutdown
+interface FastEthernet0/24
+switchport mode access
+switchport access vlan 50
+no shutdown
+ip default-gateway 12.0.4.225
+spanning-tree mode rapid-pvst
+spanning-tree vlan 40 root primary
+spanning-tree vlan 50 root primary
+spanning-tree vlan 60 root primary
+username admin privilege 15 password chooky
+enable password vmc
+line vty 0 15
+login local
+transport input ssh
+exit
+ip domain-name hq.local
+crypto key generate rsa
+
+Switch S3 (HQ - VTP Client)
+enable
+configure terminal
+vtp mode client
+vtp domain HQ
+interface vlan 60
+ip address 12.0.4.228 255.255.255.224
+no shutdown
+interface range FastEthernet0/1 - 2
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 1 mode active
+no shutdown
+interface Port-channel1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/3 - 4
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 2 mode active
+no shutdown
+interface Port-channel2
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/5 - 12
+switchport mode access
+switchport access vlan 10
+no shutdown
+interface range FastEthernet0/13 - 20
+switchport mode access
+switchport access vlan 20
+no shutdown
+interface range FastEthernet0/21 - 22
+switchport mode access
+switchport access vlan 30
+no shutdown
+interface range FastEthernet0/23
+switchport mode access
+switchport access vlan 40
+no shutdown
+interface FastEthernet0/24
+switchport mode access
+switchport access vlan 50
+no shutdown
+ip default-gateway 12.0.4.225
+spanning-tree mode rapid-pvst
+username admin privilege 15 password chooky
+enable password vmc
+line vty 0 15
+login local
+transport input ssh
+exit
+ip domain-name hq.local
+crypto key generate rsa
+
+Switch S4 (HQ - VTP Client)
+enable
+configure terminal
+vtp mode client
+vtp domain HQ
+interface vlan 60
+ip address 12.0.4.229 255.255.255.224
+no shutdown
+interface range FastEthernet0/1 - 2
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 1 mode active
+no shutdown
+interface Port-channel1
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/3 - 4
+switchport mode trunk
+switchport trunk native vlan 60
+channel-group 2 mode active
+no shutdown
+interface Port-channel2
+switchport mode trunk
+switchport trunk native vlan 60
+no shutdown
+interface range FastEthernet0/5 - 12
+switchport mode access
+switchport access vlan 10
+no shutdown
+interface range FastEthernet0/13 - 20
+switchport mode access
+switchport access vlan 20
+no shutdown
+interface range FastEthernet0/21 - 22
+switchport mode access
+switchport access vlan 30
+no shutdown
+interface range FastEthernet0/23
+switchport mode access
+switchport access vlan 40
+no shutdown
+interface FastEthernet0/24
+switchport mode access
+switchport access vlan 50
+no shutdown
+ip default-gateway 12.0.4.225
+spanning-tree mode rapid-pvst
+username admin privilege 15 password chooky
+enable password vmc
+line vty 0 15
+login local
+transport input ssh
+exit
+ip domain-name hq.local
+crypto key generate rsa
+
+Router R4 (HQ - Inter-VLAN Routing)
+enable
+configure terminal
+interface GigabitEthernet0/0/0.10
+encapsulation dot1Q 10
+ip address 12.0.1.1 255.255.255.0
+no shutdown
+interface GigabitEthernet0/0/0.20
+encapsulation dot1Q 20
+ip address 12.0.2.1 255.255.254.0
+no shutdown
+interface GigabitEthernet0/0/0.30
+encapsulation dot1Q 30
+ip address 12.0.4.1 255.255.255.128
+no shutdown
+interface GigabitEthernet0/0/0.40
+encapsulation dot1Q 40
+ip address 12.0.4.129 255.255.255.192
+no shutdown
+interface GigabitEthernet0/0/0.50
+encapsulation dot1Q 50
+ip address 12.0.4.193 255.255.255.240
+no shutdown
+interface GigabitEthernet0/0/0.60
+encapsulation dot1Q 60 native
+ip address 12.0.4.225 255.255.255.224
+no shutdown
+interface GigabitEthernet0/0/0
+no shutdown
+interface GigabitEthernet0/0/1
+no ip address
+no shutdown

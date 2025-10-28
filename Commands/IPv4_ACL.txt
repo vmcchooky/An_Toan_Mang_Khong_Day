@@ -1,0 +1,42 @@
+R4
+configure terminal
+no ip access-list extended 101
+!
+ip access-list extended 101
+ permit udp any eq 68 any eq 67
+ permit udp any eq 67 any eq 68
+ permit udp 12.0.4.128 0.0.0.63 host 12.0.4.194 eq 53
+ permit tcp 12.0.4.128 0.0.0.63 host 12.0.4.194 eq 80
+ permit tcp 12.0.4.128 0.0.0.63 host 12.0.4.194 eq 443
+ permit ip 12.0.4.128 0.0.0.63 203.0.113.0 0.0.0.255
+ deny ip 12.0.4.128 0.0.0.63 12.0.0.0 0.255.255.255
+ deny ip 12.0.4.128 0.0.0.63 200.0.100.0 0.0.0.255
+ deny ip 12.0.4.128 0.0.0.63 128.1.0.0 0.0.255.255
+ permit ip 12.0.4.128 0.0.0.63 any
+!
+interface GigabitEthernet0/0/0.40
+ ip access-group 101 in
+end
+
+S1, S2, S3, S4
+access-list 101 permit tcp 12.0.4.192 0.0.0.15 any eq 22
+line vty 0 15
+ access-class 101 in
+
+R4
+configure terminal
+no ip access-list extended 102
+!
+ip access-list extended 102
+ permit udp any eq 68 any eq 67
+ permit udp any eq 67 any eq 68
+ permit udp 12.0.4.0 0.0.0.127 host 12.0.4.194 eq 53
+ permit ip 12.0.4.0 0.0.0.127 203.0.113.0 0.0.0.255
+ deny ip 12.0.4.0 0.0.0.127 12.0.0.0 0.255.255.255
+ deny ip 12.0.4.0 0.0.0.127 200.0.100.0 0.0.0.255
+ deny ip 12.0.4.0 0.0.0.127 128.1.0.0 0.0.255.255
+ permit ip 12.0.4.0 0.0.0.127 any
+!
+interface GigabitEthernet0/0/0.30
+ ip access-group 102 in
+end

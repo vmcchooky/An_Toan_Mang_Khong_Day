@@ -1,0 +1,25 @@
+
+R4
+enable
+configure terminal
+ipv6 unicast-routing
+ipv6 dhcp pool VLAN10
+address prefix 2019:ABBA:CDDC:1000::/64
+dns-server 2001:4860:4860::8888
+ipv6 dhcp pool VLAN20
+address prefix 2019:ABBA:CDDC:2000::/64
+dns-server 2001:4860:4860::8888
+ipv6 dhcp pool VLAN30
+address prefix 2019:ABBA:CDDC:3000::/64
+dns-server 2001:4860:4860::8888
+ipv6 dhcp pool VLAN40
+address prefix 2019:ABBA:CDDC:4000::/64
+dns-server 2001:4860:4860::8888
+interface GigabitEthernet0/0/0.10
+ipv6 dhcp server VLAN10
+interface GigabitEthernet0/0/0.20
+ipv6 dhcp server VLAN20
+interface GigabitEthernet0/0/0.30
+ipv6 dhcp server VLAN30
+interface GigabitEthernet0/0/0.40
+ipv6 dhcp server VLAN40

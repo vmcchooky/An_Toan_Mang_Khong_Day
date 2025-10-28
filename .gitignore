@@ -1,0 +1,89 @@
+# ============================================
+# Git Ignore Template for Network Configuration Projects
+# Author: Chooky (Võ Mạnh Cường)
+# ============================================
+
+# Packet Tracer project files (optional backups / autosave)
+*.bak
+*.tmp
+*.autosave
+*.pkt~
+*.zip
+*.rar
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE configs
+.vscode/
+.idea/
+*.log
+*.swp
+*.swo
+
+# Temporary or export folders
+__pycache__/
+temp/
+backup/
+logs/
+outputs/
+
+# Compiled / cache / generated files
+*.pyc
+*.pyo
+*.class
+*.exe
+*.dll
+*.so
+
+# Documentation build output
+/build/
+dist/
+*.pdf~
+*.docx~
+*.pptx~
+*.rtf~
+*.bak
+
+# OS-specific junk
+ehthumbs.db
+Icon?
+*.lnk
+
+# Node or Python virtual env (if used for automation scripts)
+node_modules/
+venv/
+env/
+
+# Personal or credential files
+*.env
+*.key
+*.pem
+*.crt
+*.cfg
+*.conf
+*.secret
+*.credentials
+passwords.txt
+
+# Ignore exported captures (Wireshark, etc.)
+*.pcap
+*.pcapng
+*.trace
+
+# Packet Tracer autosave backups
+*.pkt.autosave
+
+# ============================================
+# Keep important files
+# ============================================
+
+# Keep report, configs, and README
+!README.md
+!LICENSE
+!*.txt
+!*.pkt
+!*.pdf
+!*.png

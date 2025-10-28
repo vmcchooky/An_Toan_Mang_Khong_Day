@@ -1,0 +1,133 @@
+R6
+
+enable
+configure terminal
+crypto isakmp enable
+crypto isakmp policy 67
+encryption aes 256
+hash sha
+authentication pre-share
+group 2
+!lifetime 86400
+exit
+crypto isakmp key VPNKeyR6R7! address 200.0.100.1
+crypto ipsec transform-set SET67 esp-aes 256 esp-sha-hmac
+
+access-list 110 permit ip 128.1.7.0 0.0.0.255 12.0.0.0 0.0.255.255
+access-list 110 permit ip 12.0.0.0 0.0.255.255 128.1.7.0 0.0.0.255
+access-list 110 permit ip 128.1.7.0 0.0.0.255 128.1.0.0 0.0.255.255
+access-list 110 permit ip 128.1.0.0 0.0.255.255 128.1.7.0 0.0.0.255
+access-list 110 permit ip 128.1.7.0 0.0.0.255 200.0.100.0 0.0.0.255
+access-list 110 permit ip 200.0.100.0 0.0.0.255 128.1.7.0 0.0.0.255
+
+crypto map VPN-MAP 67 ipsec-isakmp
+ set peer 200.0.100.1
+ set transform-set SET67
+ match address 110
+ exit
+
+interface S0/1/0
+crypto map VPN-MAP
+ exit
+
+R7
+
+enable
+configure terminal
+crypto isakmp enable
+crypto isakmp policy 67
+encryption aes 256
+hash sha
+authentication pre-share
+group 2
+!lifetime 86400
+exit
+crypto isakmp key VPNKeyR6R7! address 200.0.100.2
+crypto ipsec transform-set SET67 esp-aes 256 esp-sha-hmac
+
+access-list 110 permit ip 128.1.7.0 0.0.0.255 12.0.0.0 0.0.255.255
+access-list 110 permit ip 12.0.0.0 0.0.255.255 128.1.7.0 0.0.0.255
+access-list 110 permit ip 128.1.7.0 0.0.0.255 128.1.0.0 0.0.255.255
+access-list 110 permit ip 128.1.0.0 0.0.255.255 128.1.7.0 0.0.0.255
+access-list 110 permit ip 128.1.7.0 0.0.0.255 200.0.100.0 0.0.0.255
+access-list 110 permit ip 200.0.100.0 0.0.0.255 128.1.7.0 0.0.0.255
+
+crypto map VPN-MAP 67 ipsec-isakmp
+ set peer 200.0.100.2
+ set transform-set SET67
+ match address 110
+ exit
+
+interface S0/1/1
+crypto map VPN-MAP
+ exit
+end
+wr
+
+enable
+configure terminal
+crypto isakmp enable
+crypto isakmp policy 78
+encryption aes 256
+hash sha
+authentication pre-share
+group 2
+!lifetime 86400
+exit
+crypto isakmp key VPNKeyR7R8! address 200.0.100.6
+crypto ipsec transform-set SET78 esp-aes 256 esp-sha-hmac
+
+access-list 120 permit ip 12.0.0.0 0.0.255.255 12.0.6.0 0.0.0.255
+access-list 120 permit ip 128.1.0.0 0.0.255.255 12.0.6.0 0.0.0.255
+access-list 120 permit ip 200.0.100.0 0.0.0.255 12.0.6.0 0.0.0.255
+access-list 120 permit ip 12.0.6.0 0.0.0.255 12.0.0.0 0.0.255.255
+access-list 120 permit ip 12.0.6.0 0.0.0.255 128.1.0.0 0.0.255.255
+access-list 120 permit ip 12.0.6.0 0.0.0.255 200.0.100.0 0.0.0.255
+
+crypto map VPN-MAP2 78 ipsec-isakmp
+ set peer 200.0.100.6
+ set transform-set SET78
+ match address 120
+ exit
+
+interface S0/1/0
+crypto map VPN-MAP2
+ exit
+end
+wr
+
+R8
+
+enable
+configure terminal
+crypto isakmp enable
+crypto isakmp policy 78
+encryption aes 256
+hash sha
+authentication pre-share
+group 2
+!lifetime 86400
+exit
+crypto isakmp key VPNKeyR7R8! address 200.0.100.5
+crypto ipsec transform-set SET78 esp-aes 256 esp-sha-hmac
+
+access-list 120 permit ip 12.0.6.0 0.0.0.255 12.0.0.0 0.0.255.255
+access-list 120 permit ip 12.0.6.0 0.0.0.255 128.1.0.0 0.0.255.255
+access-list 120 permit ip 12.0.6.0 0.0.0.255 200.0.100.0 0.0.0.255
+access-list 120 permit ip 12.0.0.0 0.0.255.255 12.0.6.0 0.0.0.255
+access-list 120 permit ip 128.1.0.0 0.0.255.255 12.0.6.0 0.0.0.255
+access-list 120 permit ip 200.0.100.0 0.0.0.255 12.0.6.0 0.0.0.255
+
+crypto map VPN-MAP2 78 ipsec-isakmp
+ set peer 200.0.100.5
+ set transform-set SET78
+ match address 120
+ exit
+
+interface S0/1/0
+crypto map VPN-MAP2
+ exit
+end
+wr
+
+

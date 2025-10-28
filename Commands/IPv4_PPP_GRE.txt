@@ -1,0 +1,93 @@
+1. Cấu hình R6, R7, R8
+
+# Cấu hình IP 
+*R7
+interface s0/1/1
+ip address 200.0.100.1 255.255.255.252
+no shut
+exit
+interface s0/1/0
+ip address 200.0.100.5 255.255.255.252
+no shut
+exit
+
+*R6
+interface s0/1/0
+ip address 200.0.100.2 255.255.255.252
+no shut
+
+*R8
+interface s0/1/0
+ip address 200.0.100.6 255.255.255.252
+no shut
+
+# Cấu hình xác thực PPP
+* PPP PAP R7 và R6
+**R7
+username R6 password chooky
+interface s0/1/1
+encapsulation ppp
+
+**R6
+interface s0/1/0
+encapsulation ppp
+ppp pap sent-username R6 password chooky
+
+* PPP CHAP R7 và R8
+**R7 
+hostname R7
+username R8 password vmc
+interface s0/1/0
+encapsulation ppp
+ppp authentication chap
+ppp chap hostname R7
+ppp chap password vmc
+
+**R8
+hostname R8
+username R7 password vmc
+
+interface s0/1/0
+encapsulation ppp
+ppp authentication chap
+ppp chap hostname R8
+ppp chap password vmc
+
+
+# Cấu hình GRE Tunnel R6 vs R8
+*R6
+interface Tunnel 0
+ip address 200.0.100.25 255.255.255.252
+tunnel source Serial0/1/0
+tunnel destination 200.0.100.6
+
+*R8
+interface Tunnel 0
+ip address 200.0.100.26 255.255.255.252
+tunnel source Serial0/1/0
+tunnel destination 200.0.100.2
+
+# Để GRE và phân đoạn mạng thông, cấu hình định tuyến
+# Chọn EIGRP
+*R6
+router eigrp 100
+network 200.0.100.24 0.0.0.3
+network 200.0.100.0 0.0.0.3
+no auto-summary
+
+*R7
+router eigrp 100
+network 200.0.100.0 0.0.0.3
+network 200.0.100.4 0.0.0.3
+passive-interface default
+no passive-interface Serial0/1/0
+no passive-interface Serial0/1/1
+no auto-summary
+
+*R8
+router eigrp 100
+network 200.0.100.24 0.0.0.3
+network 200.0.100.4 0.0.0.3
+no auto-summary
+
+

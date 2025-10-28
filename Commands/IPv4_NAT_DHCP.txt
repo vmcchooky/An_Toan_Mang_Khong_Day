@@ -1,0 +1,127 @@
+Router ACCESS (NAT Overload + Port Forwarding)
+enable
+configure terminal
+access-list 1 permit 12.0.0.0 0.255.255.255
+access-list 1 permit 128.1.0.0 0.0.255.255
+ip nat inside source list 1 interface GigabitEthernet0/0/0 overload
+ip nat inside source static tcp 12.0.4.194 80 203.0.113.1 80 
+ip nat inside source static tcp 12.0.4.194 443 203.0.113.1 443 
+interface Serial0/1/0
+ip nat inside
+interface GigabitEthernet0/0/0
+ip nat outside
+
+Router R4
+
+enable
+configure terminal
+
+! VLAN10: 12.0.1.1 - 12.0.1.10
+ip dhcp excluded-address 12.0.1.1 12.0.1.10
+
+! VLAN20: 12.0.2.1 - 12.0.2.10
+ip dhcp excluded-address 12.0.2.1 12.0.2.10
+
+! VLAN30: 12.0.4.1 - 12.0.4.10
+ip dhcp excluded-address 12.0.4.1 12.0.4.10
+
+! VLAN40: 12.0.4.129 - 12.0.4.138
+ip dhcp excluded-address 12.0.4.129 12.0.4.138
+
+! VLAN50: 12.0.4.193 - 12.0.4.202
+ip dhcp excluded-address 12.0.4.193 12.0.4.202
+
+! VLAN60: 12.0.4.225 - 12.0.4.234
+ip dhcp excluded-address 12.0.4.225 12.0.4.234
+
+ip dhcp pool VLAN10
+ network 12.0.1.0 255.255.255.0
+ default-router 12.0.1.1
+ dns-server 12.0.4.194
+
+ip dhcp pool VLAN20
+ network 12.0.2.0 255.255.254.0
+ default-router 12.0.2.1
+ dns-server 12.0.4.194
+
+ip dhcp pool VLAN30
+ network 12.0.4.0 255.255.255.128
+ default-router 12.0.4.1
+ dns-server 12.0.4.194
+
+ip dhcp pool VLAN40
+ network 12.0.4.128 255.255.255.192
+ default-router 12.0.4.129
+ dns-server 12.0.4.194
+
+ip dhcp pool VLAN50
+ network 12.0.4.192 255.255.255.240
+ default-router 12.0.4.193
+ dns-server 12.0.4.194
+
+ip dhcp pool VLAN60
+ network 12.0.4.224 255.255.255.224
+ default-router 12.0.4.225
+ dns-server 12.0.4.194
+
+interface GigabitEthernet0/0/0.10
+ encapsulation dot1Q 10
+ ip address 12.0.1.1 255.255.255.0
+ ip helper-address 12.0.4.194
+
+interface GigabitEthernet0/0/0.20
+ encapsulation dot1Q 20
+ ip address 12.0.2.1 255.255.254.0
+ ip helper-address 12.0.4.194
+
+interface GigabitEthernet0/0/0.30
+ encapsulation dot1Q 30
+ ip address 12.0.4.1 255.255.255.128
+ ip helper-address 12.0.4.194
+
+interface GigabitEthernet0/0/0.40
+ encapsulation dot1Q 40
+ ip address 12.0.4.129 255.255.255.192
+ ip helper-address 12.0.4.194
+
+interface GigabitEthernet0/0/0.50
+ encapsulation dot1Q 50
+ ip address 12.0.4.193 255.255.255.240
+ ip helper-address 12.0.4.194
+
+interface GigabitEthernet0/0/0.60
+ encapsulation dot1Q 60 native
+ ip address 12.0.4.225 255.255.255.224
+ ip helper-address 12.0.4.194
+
+
+R6
+enable
+configure terminal
+ip dhcp excluded-address 128.1.7.1 128.1.7.9 
+
+ip dhcp pool LAN6 
+ network 128.1.7.0 255.255.255.0 
+ default-router 128.1.7.1 
+ dns-server 12.0.4.194
+exit
+router eigrp 100
+no passive-interface g0/0/0
+end
+wr
+
+
+R8
+enable
+configure terminal
+ip dhcp excluded-address 12.0.6.1 12.0.6.9 
+
+ip dhcp pool LAN8
+ network 12.0.6.0 255.255.255.0 
+ default-router 12.0.6.1 
+ dns-server 12.0.4.194
+exit
+router eigrp 100
+no passive-interface g0/0/0
+end
+wr
