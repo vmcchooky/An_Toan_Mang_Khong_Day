@@ -98,7 +98,8 @@ Báo cáo mô tả chi tiết **thiết kế, phân bổ địa chỉ, cấu hì
 File cấu hình Packet Tracer (pkt) đi kèm chứa mô hình mạng tương ứng, bao gồm các router, switch, WLC, AP và thiết bị cuối, được thiết lập dựa trên các phần đã mô tả trong báo cáo.
 
 ### Nội dung file cấu hình
-* **Tên file**: `52200319.pkt` (hoặc tên file .pkt của bạn).
+* **Tên file**: `configuration.pkt` 
+
 * **Phiên bản Packet Tracer**: Được tạo và kiểm tra trên Packet Tracer.
 * **Cấu hình chính**:
     * Kết nối PPP, GRE tunnel.
