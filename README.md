@@ -100,7 +100,7 @@ File cấu hình Packet Tracer (pkt) đi kèm chứa mô hình mạng tương �
 ### Nội dung file cấu hình
 * **Tên file**: `configuration.pkt` 
 
-* **Phiên bản Packet Tracer**: Được tạo và kiểm tra trên Packet Tracer.
+* **Phiên bản Packet Tracer**: Được tạo và kiểm tra trên Packet Tracer phiên bản 8.2.2.
 * **Cấu hình chính**:
     * Kết nối PPP, GRE tunnel.
     * Định tuyến OSPF (Branch) và EIGRP (HQ) cho cả IPv4/IPv6.
@@ -117,7 +117,27 @@ File cấu hình Packet Tracer (pkt) đi kèm chứa mô hình mạng tương �
     * Truy cập WLC qua Web Browser từ PC trong VLAN 60 (Management) với địa chỉ `https://12.0.4.232`.
     * Kiểm tra kết nối bằng lệnh `ping` giữa các thiết bị.
     * Xem bảng định tuyến với `show ip route` (IPv4) hoặc `show ipv6 route` (IPv6).
-3.  **Thử nghiệm**:
+3. **Xem lệnh cấu hình chi tiết**:
+   - Mở thư mục "Commands" đi kèm để tham khảo các file lệnh cấu hình chi tiết, bao gồm:
+     - IPv4_ACL.txt: Cấu hình ACL cho IPv4.
+     - IPv4_Configuration.txt: Cấu hình tổng quát IPv4.
+     - IPv4_NAT_DHCP.txt: Cấu hình NAT và DHCP cho IPv4.
+     - IPv4_PPP_GRE.txt: Cấu hình PPP và GRE.
+     - IPv4_Routing.txt: Cấu hình định tuyến IPv4.
+     - IPv6_Configuration.txt: Cấu hình tổng quát IPv6.
+     - IPv6_DHCP.txt: Cấu hình DHCPv6.
+     - IPv6_Routing.txt: Cấu hình định tuyến IPv6.
+   - Các file này chứa các lệnh được áp dụng trên từng thiết bị, được lưu lại vào ngày 11/05/2025.
+
+4.  **Thử nghiệm**:
+    - Kiểm tra NAT bằng cách truy cập Internet từ host trong VLAN.
+    - Xác nhận DHCP/DHCPv6 bằng cách kiểm tra địa chỉ IP được cấp cho host.
+    - Thử truy cập bị chặn bởi ACL để kiểm tra hiệu quả.
+    - **NAT:** ping từ host nội bộ ra Internet.
+    - **DHCP:** kiểm tra host có nhận IP động.
+    - **ACL:** thử truy cập từ VLAN bị chặn (ví dụ: GUEST) → xác minh giới hạn truy cập.
+    - **SSH:** kết nối quản trị thiết bị từ VLAN SERVERS.
+    
     * **WLAN:** Kết nối thiết bị cuối (Laptop, Smartphone) vào các SSID.
         * *Marketing/Business:* Thử xác thực 802.1X (ví dụ: user: `business01`, pass: `business01`).
         * *IoT:* Thử xác thực PSK (pass: `IoT2025!`).
