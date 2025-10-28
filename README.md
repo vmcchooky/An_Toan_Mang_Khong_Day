@@ -137,7 +137,7 @@ File cấu hình Packet Tracer (pkt) đi kèm chứa mô hình mạng tương �
     - **DHCP:** kiểm tra host có nhận IP động.
     - **ACL:** thử truy cập từ VLAN bị chặn (ví dụ: GUEST) → xác minh giới hạn truy cập.
     - **SSH:** kết nối quản trị thiết bị từ VLAN SERVERS.
-    
+
     * **WLAN:** Kết nối thiết bị cuối (Laptop, Smartphone) vào các SSID.
         * *Marketing/Business:* Thử xác thực 802.1X (ví dụ: user: `business01`, pass: `business01`).
         * *IoT:* Thử xác thực PSK (pass: `IoT2025!`).
@@ -171,7 +171,6 @@ File cấu hình Packet Tracer (pkt) đi kèm chứa mô hình mạng tương �
 
 * **📽️ Slide thuyết trình (Canva):**
     * [Nhấn vào đây để xem slides](https://www.canva.com/design/DAGn-AU1dLw/6NyfurXWwxICWmcNa5AZvw/view) 
-    *(Lưu ý: Đã đổi link sang chế độ /view để người xem xem dễ dàng hơn)*
 
 ---
 ### Lưu ý
